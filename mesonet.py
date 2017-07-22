@@ -70,7 +70,7 @@ class PyMesonet(object):
                     print('file for '+ str(d) + ' already exists moving on to the next day')
                     continue
                 lines = ['{} 19:00:00PM 0.00\n'] #list to store reformatted timestamps to ex. 1994/10/19 02:05:00AM 0.0 for SWMM
-                dateformat = '{:04d}/{:02d}/{:02d}' #format date from current date
+                dateformat = '{:02d}/{:02d}/{:04d}' #format date from current date
                 rainlist = [] #list to store rain data
                 accessurl = self.baseurl.format(year,month,day,self.raingauge) #create url to download data from mesonet using .format
                 req = Request(accessurl) #request object of accessurl
@@ -101,28 +101,28 @@ class PyMesonet(object):
                                 prevyear = year - 1
                                 prevmonth = 12
                                 prevday = 31
-                                lines[0]=lines[0].format(dateformat.format(prevyear, prevmonth, prevday))
-                                line = '{} {} {:.2f}\n'.format(dateformat.format(prevyear,prevmonth,prevday),basetime,dif)
+                                lines[0] = lines[0].format(dateformat.format(prevmonth, prevday, prevyear))
+                                line = '{} {} {:.2f}\n'.format(dateformat.format(prevmonth, prevday,prevyear),basetime,dif)
                             else: #else just go back one month
                                 prevmonth = month - 1
                                 dayrange = calendar.monthrange(year,prevmonth)#get the last day of the prevmonth
                                 prevday = dayrange[1]#last day of prev month
-                                lines[0] = lines[0].format(dateformat.format(year, prevmonth, prevday))
-                                line = '{} {} {:.2f}\n'.format(dateformat.format(year, prevmonth, prevday), basetime, dif)
+                                lines[0] = lines[0].format(dateformat.format(prevmonth, prevday, year))
+                                line = '{} {} {:.2f}\n'.format(dateformat.format(prevmonth, prevday, year), basetime, dif)
 
                         else:
-                            lines[0] =lines[0].format(dateformat.format(year,month,day-1))#else not first of the month just go back one day
-                            line = '{} {} {:.2f}\n'.format(dateformat.format(year, month, prevday), basetime, dif)
+                            lines[0] = lines[0].format(dateformat.format(month,day-1,year))#else not first of the month just go back one day
+                            line = '{} {} {:.2f}\n'.format(dateformat.format(month, prevday, year), basetime, dif)
                     elif 300 <= t < 1020:
                         period = 'AM'
                         h-=24
                         basetime = '{0:02d}:{1:02d}:{2:02d}{3:}'.format(h,m,s,period) #use format to set time stamp using current values
-                        line = '{} {} {:.2f}\n'.format(dateformat.format(year,month,day),basetime,dif)
+                        line = '{} {} {:.2f}\n'.format(dateformat.format(month,day,year),basetime,dif)
                     else:
                         period = 'PM'
                         h-=24
                         basetime = '{0:02d}:{1:02d}:{2:02d}{3:}'.format(h,m,s,period) #use format to set time stamp using current values
-                        line = '{} {} {:.2f}\n'.format(dateformat.format(year,month,day),basetime,dif)
+                        line = '{} {} {:.2f}\n'.format(dateformat.format(month,day,year),basetime,dif)
 
                     lines.append(line) #add line to list of lines
                 with open(r'{}\{}'.format(output,fileoutput),'w') as f: #mkae files for each date write all timestamps to files
@@ -131,7 +131,7 @@ class PyMesonet(object):
         else:
             print('only d1 given gathering data for {} at station {}'.format(d1,self.raingauge))
             year, month, day = d1.year, d1.month, d1.day
-            dateformat = '{:04d}/{:02d}/{:02d}' #format date from current date
+            dateformat = '{:02d}/{:02d}/{:04d}' #format date from current date
             last = 0
             y[3] = d1
             fileoutput = '{3}-{0}-{1}-{2}.dat'.format(*y)#names of the each file for current date
@@ -169,29 +169,29 @@ class PyMesonet(object):
                             prevyear = year - 1
                             prevmonth = 12
                             prevday = 31
-                            lines[0]=lines[0].format(dateformat.format(prevyear, prevmonth, prevday))
-                            line = '{} {} {:.2f}\n'.format(dateformat.format(prevyear,prevmonth,prevday),basetime,dif)
+                            lines[0] = lines[0].format(dateformat.format(prevmonth, prevday,prevyear))
+                            line = '{} {} {:.2f}\n'.format(dateformat.format(prevmonth,prevday,prevyear),basetime,dif)
                         else:
                             prevmonth = month - 1
                             dayrange = calendar.monthrange(year,prevmonth)
                             prevday = dayrange[1]
-                            lines[0] = lines[0].format(dateformat.format(year, prevmonth, prevday))
-                            line = '{} {} {:.2f}\n'.format(dateformat.format(year, prevmonth, prevday), basetime, dif)
+                            lines[0] = lines[0].format(dateformat.format(prevmonth, prevday, year))
+                            line = '{} {} {:.2f}\n'.format(dateformat.format(prevmonth, prevday, year), basetime, dif)
 
                     else:
-                        lines[0] =lines[0].format(dateformat.format(year,month,day-1))
-                        line = '{} {} {:.2f}\n'.format(dateformat.format(year, month, prevday), basetime, dif)
+                        lines[0] = lines[0].format(dateformat.format(month,day-1,year))
+                        line = '{} {} {:.2f}\n'.format(dateformat.format(month, prevday, year), basetime, dif)
 
                 elif 300 <= t < 1020:
                     period = 'AM'
                     h-=24
                     basetime = '{0:02d}:{1:02d}:{2:02d}{3:}'.format(h,m,s,period) #use format to set time stamp using current values
-                    line = '{} {} {:.2f}\n'.format(dateformat.format(year,month,day),basetime,dif)
+                    line = '{} {} {:.2f}\n'.format(dateformat.format(month,day,year),basetime,dif)
                 else:
                     period = 'PM'
                     h-=24
                     basetime = '{0:02d}:{1:02d}:{2:02d}{3:}'.format(h,m,s,period) #use format to set time stamp using current values
-                    line = '{} {} {:.2f}\n'.format(dateformat.format(year,month,day),basetime,dif)
+                    line = '{} {} {:.2f}\n'.format(dateformat.format(month,day,year),basetime,dif)
 
                 lines.append(line) #add line to list of lines
             with open(r'{}\{}'.format(output,fileoutput),'w') as f: #mkae files for each date write all timestamps to files
@@ -278,3 +278,5 @@ class PyMesonet(object):
                     total = total + raindata
         print(total)
         return total
+x =  PyMesonet('okcn')
+x.download([2017,3,1],[2017,3,15])
