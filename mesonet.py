@@ -125,7 +125,7 @@ class PyMesonet(object):
                         line = '{} {} {:.2f}\n'.format(dateformat.format(month,day,year),basetime,dif)
 
                     lines.append(line) #add line to list of lines
-                with open(r'{}os.sep{}'.format(output,fileoutput),'w') as f: #mkae files for each date write all timestamps to files
+                with open(r'{}{}{}'.format(output,os.sep,fileoutput),'w') as f: #mkae files for each date write all timestamps to files
                     print('file for {} has been completed'.format(d))
                     f.writelines(lines)
         else:
